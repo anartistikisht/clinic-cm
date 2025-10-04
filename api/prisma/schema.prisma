@@ -1,0 +1,12 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "sqlite"; url = env("DATABASE_URL") }
+
+enum Role { ADMIN DOCTOR NURSE RECEPTION FINANCE READONLY }
+enum Priority { I_OPERUAR FAMILJAR SHOQERI KONSULTE }
+enum ApptStatus { PLANIFIKUAR KONFIRMUAR NE_PRITJE KRYER ANULUAR HUMBUR }
+
+model User { id String @id @default(uuid()) fullName String email String @unique phone String? role Role password String isActive Boolean @default(true) createdAt DateTime @default(now()) }
+model Patient { id String @id @default(uuid()) firstName String lastName String dateOfBirth DateTime? gender String? phone String? email String? documentId String? address String? city String? allergies String? chronicConditions String? currentMedications String? consentMarketing Boolean @default(false) consentDataProcessing Boolean @default(true) createdAt DateTime @default(now()) updatedAt DateTime @updatedAt appointments Appointment[] encounters Encounter[] }
+model Appointment { id String @id @default(uuid()) scheduledDate DateTime scheduledTime String patient Patient @relation(fields: [patientId], references: [id]) patientId String externalId String? priority Priority phone String? comment String? status ApptStatus @default(PLANIFIKUAR) paymentStatus String? paymentAmount Float? paymentCurrency String? @default("EUR") paymentMethod String? createdBy String? createdAt DateTime @default(now()) updatedAt DateTime @updatedAt encounters Encounter[] }
+model Encounter { id String @id @default(uuid()) patient Patient @relation(fields: [patientId], references: [id]) patientId String appointment Appointment? @relation(fields: [appointmentId], references: [id]) appointmentId String? encounterType String? description String? icd10Code String? paymentEur Float? createdBy String? createdAt DateTime @default(now()) updatedAt DateTime @updatedAt }
+model Audit { id String @id @default(uuid()) userId String? action String entity String entityId String before String? after String? ip String? createdAt DateTime @default(now()) }

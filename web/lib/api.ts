@@ -1,0 +1,2 @@
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+export async function api(path: string, options: any = {}) { const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null; const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) }; if (token) (headers as any).Authorization = 'Bearer ' + token; const res = await fetch(API_URL + path, { ...options, headers }); if (!res.ok) throw new Error(await res.text()); return res.json(); }

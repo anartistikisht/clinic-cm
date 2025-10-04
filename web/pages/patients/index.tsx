@@ -1,0 +1,5 @@
+import { useEffect, useState } from 'react';
+import Layout from '../../components/Layout';
+import { api } from '../../lib/api';
+import Link from 'next/link';
+export default function Patients(){ const [q,setQ]=useState(''); const [list,setList]=useState<any[]>([]); const load=async()=>{ const data=await api('/patients?q='+encodeURIComponent(q)); setList(data); }; useEffect(()=>{ load(); },[]); return (<Layout><h2>Pacientët</h2><div><input placeholder='Kërko me emër/telefon' value={q} onChange={e=>setQ(e.target.value)} /><button onClick={load}>Kërko</button></div><table width='100%' cellPadding={8}><thead><tr><th>Emri</th><th>Telefoni</th><th>Qyteti</th></tr></thead><tbody>{list.map((p:any)=>(<tr key={p.id}><td><Link href={'/patients/'+p.id}>{p.firstName} {p.lastName}</Link></td><td>{p.phone || '-'}</td><td>{p.city || '-'}</td></tr>))}</tbody></table></Layout>); }

@@ -1,0 +1,5 @@
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import Layout from '../../components/Layout';
+import { api } from '../../lib/api';
+export default function PatientDetail(){ const r=useRouter(); const { id }=r.query as { id?: string }; const [p,setP]=useState<any>(null); useEffect(()=>{ if(!id) return; api('/patients/'+id).then(setP); },[id]); if(!p) return <Layout><p>Loading...</p></Layout>; return (<Layout><h2>{p.firstName} {p.lastName}</h2><p>Tel: {p.phone || '-'}</p><h3>Encounters</h3><ul>{(p.encounters||[]).map((e:any)=>(<li key={e.id}>{new Date(e.createdAt).toLocaleString()} — {e.description || '(pa përshkrim)'} — {e.paymentEur ? e.paymentEur+' EUR' : '-'}</li>))}</ul><h3>Terminet</h3><ul>{(p.appointments||[]).map((a:any)=>(<li key={a.id}>{new Date(a.scheduledDate).toLocaleDateString()} {a.scheduledTime} — {a.status}</li>))}</ul></Layout>); }

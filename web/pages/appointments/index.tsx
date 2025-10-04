@@ -1,0 +1,5 @@
+import { useEffect, useState } from 'react';
+import Layout from '../../components/Layout';
+import { api } from '../../lib/api';
+import Link from 'next/link';
+export default function Appointments(){ const [list,setList]=useState<any[]>([]); const [date,setDate]=useState<string>(''); const load=async()=>{ const qs=date?`?date=${date}`:''; const data=await api('/appointments'+qs); setList(data); }; useEffect(()=>{ load(); },[date]); return (<Layout><h2>Terminet</h2><div style={{ display:'flex', gap:8, alignItems:'center' }}><input type='date' value={date} onChange={e=>setDate(e.target.value)} /><Link href='/appointments/new'>+ Termin i ri</Link></div><table width='100%' cellPadding={8}><thead><tr><th>Data</th><th>Ora</th><th>Pacienti</th><th>Prioriteti</th><th>Statusi</th><th>Tel</th></tr></thead><tbody>{list.map((a:any)=>(<tr key={a.id}><td>{new Date(a.scheduledDate).toLocaleDateString()}</td><td>{a.scheduledTime}</td><td>{a.patient?.firstName} {a.patient?.lastName}</td><td>{a.priority}</td><td>{a.status}</td><td>{a.phone}</td></tr>))}</tbody></table></Layout>); }
